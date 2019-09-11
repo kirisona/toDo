@@ -20,7 +20,28 @@
     todo: []
   };
 
-  const table = document.querySelector('.table tbody');
+  const table = document.querySelector(".table tbody");
+  const form = document.querySelector("form");
+  const title = document.querySelector("input[name=title]");
+  const text = document.querySelector("input[name=text]");
+  const alertContainer = document.querySelector('.container');
+
+  form.addEventListener("submit", function(event) {
+    event.preventDefault();
+
+    console.log(event.target);
+
+    if (title.value === "") {
+      console.log("Title is empty");
+      alertMessage('alert-danger', 'Title is empty');
+      return;
+    }
+    console.log("title", title.value);
+    addNewToDoToStorage(title.value, text.value);
+    alertMessage('alert-info', 'Task added');
+
+    form.reset();
+  });
 
   function generateId() {
     const words =
@@ -37,7 +58,6 @@
 
   function addNewToDoToStorage(title, text) {
     if (!title) return console.log("Enter title of task");
-    if (!text) return console.log("Enter text of task");
 
     const newTask = {
       id: generateId(),
@@ -53,17 +73,17 @@
 
   /**
    * Add new task to view
-   * @param {Object} task 
+   * @param {Object} task
    */
 
   function addNewTodoToView(task) {
     const template = todoTemplate(task);
-    table.insertAdjacentHTML('afterbegin', template);
+    table.insertAdjacentHTML("afterbegin", template);
   }
 
   addNewToDoToStorage("Do homework", "dedline 22.08 09:00");
-  addNewToDoToStorage("Sleep", "today");
-  addNewToDoToStorage("Go home");
+  // addNewToDoToStorage("Sleep", "today");
+  // addNewToDoToStorage("Go home");
 
   console.log(storage.todo);
 
@@ -125,5 +145,25 @@
       </td>
     </tr>
     `;
+  }
+
+  function alertMessage(className, message) {
+    removeAlert();
+    const currentAllert = alertTemplate(className, message);
+
+    alertContainer.insertAdjacentHTML('afterbegin', currentAllert);
+
+    setTimeout(removeAlert, 2000);
+  }
+
+  function alertTemplate(className, message) {
+    return `<div class="alert ${className}">${message}</div>`;
+  }
+
+  function removeAlert() {
+    const currentAllert = document.querySelector('.alert');
+    if (currentAllert) {
+      alertContainer.removeChild(currentAllert);
+    }
   }
 })();
