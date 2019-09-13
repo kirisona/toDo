@@ -33,9 +33,8 @@
     // console.log("title", title.value);
     addNewToDoToStorage(title.value, text.value);
     alertMessage("alert-info", "Task added");
-    emptyTodoList(deleteTask);
+
     doneTask();
-    // deleteTask();
 
     form.reset();
   });
@@ -76,6 +75,9 @@
   function addNewTodoToView(task) {
     const template = todoTemplate(task);
     table.insertAdjacentHTML("afterbegin", template);
+
+    table.querySelector(`#${task.id} .fa-trash`).addEventListener('click', deleteTask);
+    emptyTodoList();
   }
 
   // console.log(storage.todo);
@@ -132,7 +134,7 @@
 
   function todoTemplate(task) {
     return `
-    <tr data-id="${task.id}">
+    <tr data-id="${task.id}" id="${task.id}">
       <td>${task.title}</td>
       <td>${task.text}</td>
       <td>
@@ -166,12 +168,10 @@
 
   //Если массив с задачами пустой то под формой нужно выводить сообщение об этом, также это же сообщение нужно выводить если вы удалите все задачи.
 
-  function emptyTodoList(callback) {
-    let templateEmpty = ` 
-  <p class="font-weight-light">Task list is empty!</p> 
+  function emptyTodoList() {
+    let templateEmpty = `
+  <p class="font-weight-light">Task list is empty!</p>
   `;
-
-  deleteTask();
 
     document
       .querySelectorAll(".font-weight-light")
@@ -180,8 +180,8 @@
     if (trTable.length === 0) {
       wrapperForm.insertAdjacentHTML("afterend", templateEmpty);
     }
-  
-    
+
+
   }
 
   emptyTodoList();
@@ -204,21 +204,17 @@
 
   doneTask();
 
-  function deleteTask() {
-    let allTasks = table.querySelectorAll("tr");
-
-    for (let i = 0; i < allTasks.length; i++) {
-      let deleteTableRow = trTable[i].querySelector(".fa-trash");
-
-      deleteTableRow.addEventListener("click", function(event) {
-        if (allTasks[i].contains(deleteTableRow) === true) {
-          return allTasks[i].remove();
-        }
-      });
+  function deleteTask(e) {
+    let target = e.target;
+    if (target.tagName.toLowerCase() !== 'tr') {
+      target = target.closest('tr');
     }
+
+    target.remove();
+
+    emptyTodoList();
   }
 
-  deleteTask();
   /* при удалении задания строка о пустом тасклисте не появляется. я пыталась вызывать функцию при условии, пыталась передавать ее как callback, пробовала вызывать в 3-х местах, не срослось */
 
   /**Добавить функционал отображения незавершенных задач и всех задач. т.е у вас будет две кнопки над таблицей 1-я "показать все задачи" и 2-я "показать незавершенные задачи", определить завершена задача или нет можно по полю completed в объекте задачи. По умолчанию при загрузке отображаются все задачи. */
