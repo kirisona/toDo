@@ -33,9 +33,9 @@
     // console.log("title", title.value);
     addNewToDoToStorage(title.value, text.value);
     alertMessage("alert-info", "Task added");
-    emptyTodoList();
+    emptyTodoList(deleteTask);
     doneTask();
-    deleteTask();
+    // deleteTask();
 
     form.reset();
   });
@@ -94,6 +94,7 @@
         break;
       }
     }
+    emptyTodoList();
     return removedTask;
   }
 
@@ -165,10 +166,12 @@
 
   //Если массив с задачами пустой то под формой нужно выводить сообщение об этом, также это же сообщение нужно выводить если вы удалите все задачи.
 
-  function emptyTodoList() {
+  function emptyTodoList(callback) {
     let templateEmpty = ` 
   <p class="font-weight-light">Task list is empty!</p> 
   `;
+
+  deleteTask();
 
     document
       .querySelectorAll(".font-weight-light")
@@ -177,6 +180,8 @@
     if (trTable.length === 0) {
       wrapperForm.insertAdjacentHTML("afterend", templateEmpty);
     }
+  
+    
   }
 
   emptyTodoList();
